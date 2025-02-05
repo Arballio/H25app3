@@ -5,22 +5,28 @@ import matplotlib.pyplot as plt
 
 def check_arg(args=None):
     parser = argparse.ArgumentParser(description='Script to learn basic argparse')
-    parser.add_argument('-N', '--name',
-                        help='Nom du fichier à analyser',
+    parser.add_argument('-NP', '--nameprim',
+                        help='Nom du fichier primaire à analyser',
                         required=True,
                         default='')
 
-    results = parser.parse_args(args)
-    return results.name
+    parser.add_argument('-NS', '--namesec',
+                        help='Nom du fichier secondaire à analyser',
+                        required=True,
+                        default='')
 
+    return parser.parse_args(args)
 
-dataPrim = np.genfromtxt('Detecteur_Primaire.csv', delimiter=',')
-
-dataSec = np.genfromtxt('Detecteur_Secondaire.csv', delimiter=',')
 
 if __name__ == '__main__':
-    n = check_arg(sys.argv[1:])
-    print('n =',n)
+    np = check_arg(sys.argv[1:])
+    ns = check_arg(sys.argv[2:])
+
+    dataPrim = np.genfromtxt(np, delimiter=',')
+
+    dataSec = np.genfromtxt(ns, delimiter=',')
+
+    print('np =',np,'ns =',ns)
 
 
     plt.hist(dataPrim[:,1], bins=100)
