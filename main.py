@@ -27,5 +27,9 @@ if __name__ == '__main__':
     print('np =',args.nameprim,'ns =',args.namesec)
 
 
-    plt.hist(dataPrim[:,1], bins=100)
+    plt.ylabel('Rate')
+    plt.xlabel('Amplitude (mV)')
+    plt.semilogx()
+    plt.title('Amplitude lue selon le temps')
+    plt.hist(dataPrim[:, 2], bins=100)
     plt.show()
