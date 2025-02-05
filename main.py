@@ -19,14 +19,12 @@ def check_arg(args=None):
 
 
 if __name__ == '__main__':
-    np = check_arg(sys.argv[1:])
-    ns = check_arg(sys.argv[2:])
+    args = check_arg()
 
-    dataPrim = np.genfromtxt(np, delimiter=',')
+    dataPrim = np.genfromtxt(args.nameprim, delimiter=',')
+    dataSec = np.genfromtxt(args.namesec, delimiter=',')
 
-    dataSec = np.genfromtxt(ns, delimiter=',')
-
-    print('np =',np,'ns =',ns)
+    print('np =',args.nameprim,'ns =',args.namesec)
 
 
     plt.hist(dataPrim[:,1], bins=100)
