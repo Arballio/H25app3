@@ -28,35 +28,12 @@ def main():
     data_sec = np.genfromtxt(args.namesec, delimiter=',')
 
     # print('np =',args.nameprim,'ns =',args.namesec)
-
-    Attend = sorted(dataPrim[:,2])
-    setAttend = sorted(set(Attend))
-    listAttend = list(setAttend)
-
-    lenSetAttend = len(listAttend)
-    print('setAttend =',listAttend)
-
-    temp = [0]*lenSetAttend
-
-    j = 0
-    for i in range(lenSetAttend):
-        while listAttend[i] == Attend[j]:
-            temp[i] += 1
-            j += 1
-            if  j >= len(Attend):
-                break;
-
-
-    #print(temp)
-
-
-    #print(myList)
-
+    
     plt.ylabel('Rate')
     plt.xlabel('Amplitude (mV)')
     plt.semilogx()
     plt.title('Amplitude lue selon le temps')
-    plt.hist(temp, bins=np.logspace(1,2, num = 50 ), histtype='step' )
+    plt.hist(data_prim[:, 2], bins=np.logspace(1,3, 20), histtype='step')
     plt.show()
 
 
