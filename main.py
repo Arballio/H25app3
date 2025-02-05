@@ -17,19 +17,21 @@ def check_arg(args=None):
 
     return parser.parse_args(args)
 
-
-if __name__ == '__main__':
+def main():
     args = check_arg()
 
-    dataPrim = np.genfromtxt(args.nameprim, delimiter=',')
-    dataSec = np.genfromtxt(args.namesec, delimiter=',')
+    data_prim = np.genfromtxt(args.nameprim, delimiter=',')
+    data_sec = np.genfromtxt(args.namesec, delimiter=',')
 
-    print('np =',args.nameprim,'ns =',args.namesec)
-
+    # print('np =',args.nameprim,'ns =',args.namesec)
 
     plt.ylabel('Rate')
     plt.xlabel('Amplitude (mV)')
     plt.semilogx()
     plt.title('Amplitude lue selon le temps')
-    plt.hist(dataPrim[:, 2], bins=100)
+    plt.hist(data_prim[:, 2], bins=100, histtype='step')
     plt.show()
+
+
+if __name__ == '__main__':
+    main()
