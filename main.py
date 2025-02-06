@@ -59,7 +59,25 @@ def Coincident(Array1, Array2):
 
     return resultat, resultat2
 
+def GenHistogramme(Array1,label = '',time = 1, color =''):
+    list(filter(lambda num: num != 0, Array1))
+    binwidth = np.logspace(np.log10(min(Array1)), np.log10(max(Array1)), num=20)
 
+    Donnes = Array1
+
+    n, bins = np.histogram(Donnes, bins=binwidth)
+    bincenter = 0.5 * (bins[1:] + bins[:-1])
+
+    lastValue = time
+    tauxTotal = n/(lastValue/1000)
+
+
+    tauxErreur = np.sqrt(n)/len(Donnes)
+
+    n, bins, patches = plt.hist(bins[:-1], bins=bins, histtype='step', color=color, label=label, weights=tauxTotal)
+    bindiff = np.diff(bins)
+    plt.errorbar(bincenter,tauxTotal, tauxErreur, (bindiff/2), color = color,fmt = '_')
+    plt.legend(loc='best', prop={'size': 10})
 
 def main():
     args = check_arg()
@@ -68,23 +86,33 @@ def main():
     data_sec = np.genfromtxt(args.namesec, delimiter=',')
 
     Coincide,NonCoincide = Coincident(data_prim, data_sec)
-    Coincide = sorted(Coincide)
+    #Coincide = sorted(Coincide)
     #print(Coincide)
-
-
     plt.ylabel('Rate')
     plt.xlabel('Amplitude (mV)')
     plt.semilogx()
     plt.title('Amplitude lue selon le temps')
     plt.grid()
-    n ,bins, patches=plt.hist(Coincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'RED',label = 'Coincident')
-    plt.hist(NonCoincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'GREEN',label = 'Non Coincident')
-    plt.hist(data_prim[:,2], bins=np.logspace(1,3, num = 20 ), histtype='step', color = 'BLUE',label = 'Tous les évènements')
-    plt.legend(loc = 'best', prop={'size': 10} )
-    bincenter = 0.5 * (bins[1:] + bins[:-1])
-    plt.errorbar(bincenter,n,n/4, color = 'GRAY', label = "Barre d'erreur")
+    time = data_prim[-1, 1]
+    valeurs = data_prim[:,2]
+
+    GenHistogramme(valeurs,'Gen',time, color = 'BLUE')
+    GenHistogramme(Coincide, 'Gen', time, color = 'RED')
+    GenHistogramme(NonCoincide, 'Gen', time, color = 'GREEN')
+    #n, bins, patches = plt.hist(Coincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'RED',label = 'Coincident' )
+    # bincenter = 0.5 * (bins[1:] + bins[:-1])
+    #plt.errorbar(bincenter, n, n / 4, color='RED', fmt='_')
+
+    #n, bins, patches = plt.hist(NonCoincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'GREEN',label = 'Non Coincident')
+    #bincenter = 0.5 * (bins[1:] + bins[:-1])
+    #plt.errorbar(bincenter, n, n / 4, color='GREEN', fmt='_')
 
 
+
+
+
+    plt.legend(loc = 'best', prop={'size': 10},  )
+    plt.show()
     if args.fichier:
         plt.savefig("Amplitude_lue_selon_le_temps.png", dpi=300)
 
