@@ -82,8 +82,8 @@ def main():
     plt.hist(data_prim[:,2], bins=np.logspace(1,3, num = 20 ), histtype='step', color = 'BLUE',label = 'Tous les évènements')
     plt.legend(loc = 'best', prop={'size': 10} )
     bincenter = 0.5 * (bins[1:] + bins[:-1])
-    plt.errorbar(bincenter,n,n/4)
-    plt.show()
+    plt.errorbar(bincenter,n,n/4, color = 'GRAY', label = "Barre d'erreur")
+
 
     if args.fichier:
         plt.savefig("Amplitude_lue_selon_le_temps.png", dpi=300)
