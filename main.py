@@ -3,6 +3,10 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+Arguments pour la compilation
+-NP Detecteur_Primaire.csv -NS Detecteur_Secondaire.c   sv -F (optionel) -TM (optionel)
+"""
 
 def check_arg(args=None):
     parser = argparse.ArgumentParser(description='Script to learn basic argparse')
