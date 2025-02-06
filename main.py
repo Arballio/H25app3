@@ -77,9 +77,11 @@ def main():
     plt.semilogx()
     plt.title('Amplitude lue selon le temps')
     plt.grid()
-    plt.hist(Coincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'RED')
-    plt.hist(NonCoincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'GREEN')
-    plt.hist(data_prim[:,2], bins=np.logspace(1,3, num = 20 ), histtype='step', color = 'BLUE' )
+    plt.hist(Coincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'RED',label = 'Coincident')
+    plt.hist(NonCoincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'GREEN',label = 'Non Coincident')
+    plt.hist(data_prim[:,2], bins=np.logspace(1,3, num = 20 ), histtype='step', color = 'BLUE',label = 'Tous les évènements' )
+    plt.legend(loc = 'best', prop={'size': 10} )
+    plt.show()
 
     if args.fichier:
         plt.savefig("Amplitude_lue_selon_le_temps.png", dpi=300)
