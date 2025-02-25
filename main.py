@@ -32,8 +32,11 @@ def check_arg(args=None):
 
 
 def Coincident(Array1, Array2):
-    roundedArray1 = set(np.around(Array1[:, 1], 0))
-    roundedArray2 = set(np.around(Array2[:, 1], 0))
+    #Dans la section Recording Data du guide de construiction du site de Cosmic Watch
+    #C'est recommandé d'utiliser un intervalle de 10ms pour la coincidence des muons,
+    # donc un  arrondissement au dizaine est effectué
+    roundedArray1 = set(np.around(Array1[:, 1], -1))
+    roundedArray2 = set(np.around(Array2[:, 1], -1))
 
     temp = roundedArray1.intersection(roundedArray2)
     temp = sorted(temp)
@@ -64,7 +67,9 @@ def Coincident(Array1, Array2):
 
 
 def GenHistogramme(Array1,label = '',time = 1, color =''):
-    list(filter(lambda num: num != 0, Array1))
+    #list(filter(lambda num: num != 0, Array1))
+    Array1 = np.array(Array1)
+    Array1 = Array1[Array1 != 0]
     binwidth = np.logspace(np.log10(min(Array1)), np.log10(max(Array1)), num=20)
 
     Donnes = Array1
@@ -85,20 +90,28 @@ def GenHistogramme(Array1,label = '',time = 1, color =''):
 
 def enleve_temp_mort(array_a, array_b):
     for i in range(len(array_a[:, 0])):
-        array_a[i, 1] = array_a[i, 1] - array_a[i, 3]
-        array_b[i, 1] = array_b[i, 1] - array_b[i, 3]
+        if i != 0 :
+            array_a[i, 1] = array_a[i, 1] - array_a[i-1, 3]
+            array_b[i, 1] = array_b[i, 1] - array_b[i-1, 3]
+            print(i)
     return array_a, array_b
 
 
 
 def main():
     args = check_arg()
+    print(args)
 
     data_prim = np.genfromtxt(args.nameprim, delimiter=',')
     data_sec = np.genfromtxt(args.namesec, delimiter=',')
 
     if args.temp_mort:
-        data_prim, data_sec = enleve_temp_mort(data_prim, data_sec)
+        #data_prim, data_sec = enleve_temp_mort(data_prim, data_sec)
+        plt.title('Amplitude lue selon le temps avec correction de Temp-mort')
+        time = (data_prim[-1, 1] - np.sum(data_prim[:,3]))
+    else:
+        plt.title('Amplitude lue selon le temps')
+        time = data_prim[-1, 1]
 
     Coincide, NonCoincide = Coincident(data_prim, data_sec)
     Coincide = sorted(Coincide)
@@ -106,14 +119,12 @@ def main():
     plt.ylabel('Rate')
     plt.xlabel('Amplitude (mV)')
     plt.semilogx()
-    plt.title('Amplitude lue selon le temps')
     plt.grid()
-    time = data_prim[-1, 1]
     valeurs = data_prim[:,2]
 
-    GenHistogramme(valeurs,'Gen',time, color = 'BLUE')
-    GenHistogramme(Coincide, 'Gen', time, color = 'RED')
-    GenHistogramme(NonCoincide, 'Gen', time, color = 'GREEN')
+    GenHistogramme(valeurs,'Valeurs Primaire',time, color = 'BLUE')
+    GenHistogramme(Coincide, 'Valeurs coincidentes', time, color = 'RED')
+    GenHistogramme(NonCoincide, 'Valeurs Non-coincidentes', time, color = 'GREEN')
     #n, bins, patches = plt.hist(Coincide[:], bins=np.logspace(1, 3, num=20), histtype='step', color = 'RED',label = 'Coincident' )
     # bincenter = 0.5 * (bins[1:] + bins[:-1])
     #plt.errorbar(bincenter, n, n / 4, color='RED', fmt='_')
@@ -130,7 +141,8 @@ def main():
 
 
     if args.fichier:
-        plt.savefig("Amplitude_lue_selon_le_temps.png", dpi=300)
+        if args.temp_mort: plt.savefig("Amplitude_lue_selon_le_temps_Correction_Temps_Mort.png", dpi=300)
+        else: plt.savefig("Amplitude_lue_selon_le_temps.png", dpi=300)
 
     else:
         plt.show()
